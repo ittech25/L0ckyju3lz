@@ -1,3 +1,9 @@
+# Author: PiereLucas (Julian H.)
+# Seamlessly dirty code
+# MIT License
+# L0ckyju3lz Ransomware
+
+import time
 import os
 import shutil
 import sys
